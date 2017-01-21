@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>NTR 2017 - Students</title>
+    <base href="/" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="~/Content/Site.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.min.css" />
+
+    <script src="~/Scripts/angular.min.js"></script>
+    <!--<script src="~/Scripts/angular-route.min.js"></script>-->
+    <script src="~/Controllers/AngularController.js"></script>
+
+</head>
+<body style="color:black" ng-app="StudentsListJS" ng-controller="StudentsListController" >
+
+    <!--<div ng-view></div> <!-- /ng-view -->
+
+    <!-- Grid for the view -->
+    <div class="container students-view" style="width: 35vw">
+
+        <!-- Cards row -->
+        <div class="row">
+            <!-- Students card -->
+            <div class="col-md-6">
+                <a href="/Home/Index" role="button" class="btn btn-info" style="width:100%;cursor:default">
+                    Studenci
+                </a>
+            </div>
+
+            <!-- Groups card -->
+            <div class="col-md-6">
+                <a href="/Home/GroupsView" role="button" class="btn btn-info" style="width:100%;cursor:default">
+                    Grupy
+                </a>
+            </div>
+        </div>
+
+        <!-- Filter row-->
+        <div class="row">
+
+            <!-- Filter fields -->
+            <div class="col-md-8">
+
+                <!-- Filter group row -->
+                <div class="row">
+                    <div class="col-md-3" style="text-align:right">
+                        Grupa:
+                    </div>
+                    <div class="col-md-9">
+                        <select style="width:100%;height:4vh" ng-model="filterGroup"
+                                ng-options="item as item.Name for item in Data.Groups track by item.IDGroup">
+                            <option value="">--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Filter city row -->
+                <div class="row">
+                    <div class="col-md-3" style="text-align:right">
+                        Miasto:
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" ng-model="filterCity" style="width:100%" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter button -->
+            <div class="col-md-2" style="height:9vh;padding:0;padding-right:15px">
+                <button type="button" ng-click="clickFilter()" class="btn btn-success"
+                        style="width:100%; height:100%; margin:auto;cursor:default">
+                    Filtruj
+                </button>
+            </div>
+
+            <!-- Clear button -->
+            <div class="col-md-2" style="height:9vh;padding:0;padding-right:15px">
+                <input type="submit" value="Odśwież" role="button" ng-click="refresh()" class="btn btn-danger" style="width:100%;height:100%;cursor:default;" />
+            </div>
+        </div> <!-- /Filter row -->
+        <!-- Students list row -->
+        <div class="row">
+            <div class="col-md-12">
+
+                <!-- Fixed-width scrolled container for students data-->
+                <div style="height: 20vh; overflow-y: scroll;border-style:solid;border-width:thin;border-color:gray">
+                    <table style="width:100%">
+                        <tr class="student-list-row" ng-repeat="st in Data.Students" ng-click="clickStudent(st)">
+                            <td>
+                                {{st.LastName}}
+                            </td>
+                            <td>
+                                {{st.FirstName}}
+                            </td>
+                            <td>
+                                {{st.BirthPlace}}
+                            </td>
+                            <td>
+                                {{findGroupByID(st.IDGroup).Name}}
+                            </td>
+                            <td>
+                                {{st.IndexNo}}
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+
+                </div> <!-- /Container-->
+
+            </div>
+
+        </div>
+
+
+        <!-- Potential error messages row -->
+        <div class="row">
+            <div class="col-md-12">
+                <span style="color:red;text-align:center;margin:auto">
+                    {{ErrMsg}}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Change group row -->
+        <div class="row">
+            <div class="col-md-4" style="text-align:right">
+                Grupa:
+            </div>
+            <div class="col-md-8">
+                <select style="width:100%;height:4vh" ng-model="editedGroup"
+                        ng-options="item as item.Name for item in Data.Groups track by item.IDGroup"></select>
+            </div>
+        </div>
+
+        <!-- Change first name -->
+        <div class="row">
+            <div class="col-md-4" style="text-align:right">
+                Imie:
+            </div>
+            <div class="col-md-8">
+                <input type="text" ng-model="editedFirstName" style="width:100%" />
+            </div>
+        </div>
+
+        <!-- Change last name -->
+        <div class="row">
+            <div class="col-md-4" style="text-align:right">
+                Nazwisko:
+            </div>
+            <div class="col-md-8">
+                <input type="text" ng-model="editedLastName" style="width:100%" />
+            </div>
+        </div>
+
+        <!-- Change birth place -->
+        <div class="row">
+            <div class="col-md-4" style="text-align:right">
+                Miejsce urodzenia:
+            </div>
+            <div class="col-md-8">
+                <input type="text" ng-model="editedBirthPlace" style="width:100%" />
+            </div>
+        </div>
+
+        <!-- Change birth date -->
+        <div class="row">
+            <div class="col-md-4" style="text-align:right">
+                Data urodzenia:
+            </div>
+            <div class="col-md-8">
+                <input type="text" ng-model="editedBirthDate" style="width:100%" />
+            </div>
+        </div>
+
+        <!-- Change index no -->
+        <div class="row">
+            <div class="col-md-4" style="text-align:right">
+                Numer indeksu:
+            </div>
+            <div class="col-md-8">
+                <input type="text" ng-model="editedIndexNo" style="width:100%" />
+            </div>
+        </div>
+
+        <!-- Save/Delete/New buttons -->
+        <div class="row">
+            <div class="col-md-6" style="text-align:right">
+
+            </div>
+            <div class="col-md-2" style="padding:0.5vh">
+                <input class="btn btn-info" value="Zapisz" ng-disabled="!editedID" ng-click="clickSave()" style="width:100%;cursor:default" />
+            </div>
+            <div class="col-md-2" style="padding:0.5vh">
+                <input class="btn btn-info" value="Usuń" ng-disabled="!editedID" ng-click="clickDelete()" style="width:100%;cursor:default" />
+            </div>
+            <div class="col-md-2" style="padding:0.5vh;padding-right:15px">
+                <input class="btn btn-info" value="Nowy" ng-click="clickNew()" style="width:100%;cursor:default" />
+            </div>
+
+        </div>
+
+
+
+    </div> <!-- /Grid -->
+
+</body>
+</html>

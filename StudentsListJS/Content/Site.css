@@ -1,0 +1,39 @@
+﻿body {
+    padding: 1vh;
+}
+
+* {
+    font-size:2vmin;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding: 1vh;
+}
+
+
+.students-view {
+    border-style: solid;
+    border-width: thin;
+    border-color: black;
+    padding: 2vh;
+}
+
+.student-list-row {
+    border-style:solid;
+    border-width:1px;
+    border-color:lightgray;
+    cursor:default;
+    border-collapse:collapse
+}
+
+.student-list-row:hover {
+    background-color: aqua;
+    border-color:lightblue;
+    cursor:default;
+    border-collapse:collapse
+}
+
+.row {
+    margin-bottom: 1vh;
+}
